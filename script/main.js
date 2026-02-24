@@ -91,3 +91,53 @@ function handleAction(button, status) {
     setupButtons(clonedCard);
     updateCounts();
 }
+
+
+
+function setupButtons(container) {
+    container.querySelectorAll('.interview-btn').forEach(btn => {
+        btn.onclick = () => handleAction(btn, 'interview');
+    });
+    container.querySelectorAll('.rejected-btn').forEach(btn => {
+        btn.onclick = () => handleAction(btn, 'rejected');
+    });
+}
+
+function showOnly(tabId, clickedButton) {
+    const tabs = ['all-job-tab', 'interview-job-tab', 'rejected-job-tab'];
+    tabs.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.add('hidden');
+    });
+
+    const activeTab = document.getElementById(tabId);
+    if(activeTab) activeTab.classList.remove('hidden');
+
+    const allButtons = document.querySelectorAll('.btn'); 
+    allButtons.forEach(btn => {
+        btn.classList.remove('bg-blue-500', 'text-white');
+        btn.classList.add('bg-white', 'text-[#64748B]');
+    });
+
+    if (clickedButton) {
+        clickedButton.classList.remove('bg-white', 'text-[#64748B]');
+        clickedButton.classList.add('bg-blue-500', 'text-white');
+    }
+    updateCounts();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupButtons(document);
+    
+    document.querySelectorAll('#all-job-tab .delete-icon').forEach(dlt => {
+        dlt.onclick = () => {
+            const card = dlt.closest('.job-card');
+            const jobId = card.getAttribute('data-job-id');
+            document.querySelectorAll(`[data-job-id="${jobId}"]`).forEach(el => el.remove());
+            updateCounts();
+        };
+    });
+
+    const allBtn = document.querySelector("button[onclick*='all-job-tab']");
+    showOnly('all-job-tab', allBtn);
+});
